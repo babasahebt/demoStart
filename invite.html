@@ -1,0 +1,428 @@
+<div class="content-primary">
+    <form id="inviteFrom" name="inviteFrom" class="full-width" data="data" novalidate>
+        <div class="form-group">
+            <h1>
+                Invite employee
+            </h1>
+            <h5 class="rblbl">
+                Please provide the information below.
+            </h5>
+            <h6 class="rblbl">Fields marked with <span class="rbl-required">*</span> are mandatory.</h6>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <b>Employee name</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-4">
+                <input type="text" maxlength="50" name="first_name" class="form-control" required id="first_name" ng-model="data.first_name"
+                    placeholder="First Name" />
+                <span class="rbl-required" ng-show="inviteFrom.first_name.$error.required  && submitted">
+                    First name is required
+                </span>
+            </div>
+
+            <div class="col-sm-4">
+                <input type="text" maxlength="50" name="lastName" class="form-control" required id="lastName" ng-model="data.last_name" placeholder="Last Name"
+                />
+                <span class="rbl-required" ng-show="submitted && inviteFrom.lastName.$error.required">
+                    Last name is required
+                </span>
+            </div>
+        </div>
+
+        <!--Email section  -->
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Email</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-4">
+                <input type="email" ng-blur='emailIsExit(data.email)' name="email" maxlength="50" class="form-control" ng-model="data.email"
+                    required id="emailId" placeholder="Email">
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.email.$error.required">
+                    Email is required
+                </span>
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.email.$error.email">Invalid email</span>
+            </div>
+            <div class="col-sm-12 col-sm-offset-3">
+                <span class="rbl-required" ng-show="isEmailExits && !inviteFrom.email.$error.email"> Email id is already present in the invitation list</span>
+            </div>
+        </div>
+
+        <!--Role Section  -->
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Position</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-4">
+                <select id="position" required name="position" class="form-control" ng-model="data.position">
+                    <option value="">Select</option>
+                    <option ng-repeat="position in positions" value="{{position.text}}">{{position.text}}</option>
+                </select>
+                <span class="rbl-required" ng-show="submitted && inviteFrom.position.$error.required">
+                    Position is required
+                </span>
+            </div>
+        </div>
+
+        <!--Location Section  -->
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Location</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-4">
+                <select id="location" class="form-control" ng-model="data.location" name="location" required>
+                    <option value="">Select</option>
+                    <option ng-repeat="location in locationList" value="{{location.text}}">{{location.text}}</option>
+                </select>
+                <span class="rbl-required" ng-show="submitted && inviteFrom.location.$error.required">
+                    Location is required
+                </span>
+            </div>
+        </div>
+
+        <!--Employment Section  -->
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Employment type</b><span class="rbl-required">*</span>
+            </div>
+            <div class="row col-sm-6 shift-edit-label">
+                <div class="col-md-4 ">
+                    <label>
+                        <input type="radio" required name="employment_type" ng-model="data.employment_type" value="Casual"> Casual
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="radio" required name="employment_type" id="Part Time" ng-click="data.part_time_interval = 'Per month'"  ng-model="data.employment_type" value="Part Time"> Part Time
+                    </label>
+                </div>
+                <div class="col-md-4">
+                    <label>
+                        <input type="radio" required name="employment_type" id="Casual" ng-model="data.employment_type" value="Permanent"> Permanent
+                    </label>
+                </div>
+
+                <div class="col-md-12">
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.employment_type.$error.required">
+                        Employment type is required
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group" ng-if="data.employment_type=='Part Time' ">
+            <div class="col-sm-3 shift-edit-label">
+                <b> How many hours work?</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-md-2">
+                <input type="number" min="1" max="700" ng-required="data.employment_type=='Part Time'" name="hours" class="form-control"
+                    ng-model="data.part_time_hours" placeholder=" Hours work" />
+                <span class="rbl-required" ng-show="submitted && inviteFrom.hours.$error.required">
+                    Hours required
+                </span>
+                <span class="rbl-required" ng-show="submitted && !inviteFrom.hours.$error.required && (inviteFrom.hours.$error.max ||inviteFrom.hours.$error.min)">
+                    Invaid hours
+                </span>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" id="hoursType" name="hoursType" ng-model="data.part_time_interval">
+                    <option value="Per month">Per month</option>
+                    <option value="Per week">Per week</option>
+                    <option value="Per fortnight">Per fortnight</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Remuneration type</b><span class="rbl-required">*</span>
+            </div>
+            <div class="row col-md-6 shift-edit-label">
+                <div class="col-md-4">
+                    <label>
+                        <input type="radio" required name="remuneration_type" ng-model="data.remuneration_type" value="Hourly rate" ng-click="data.salary = 0"> Hourly
+                        rate
+                    </label>
+                </div>
+                <div class="col-md-4">
+                    <label>
+                        <input type="radio" required name="remuneration_type" ng-model="data.remuneration_type" value="Salary"> Salary
+                    </label>
+                </div>
+                <div class="col-md-4">
+                    <label>
+                        <input type="radio" required name="remuneration_type" ng-model="data.remuneration_type" value="Other"> Other
+                    </label>
+                </div>
+
+                <div class="col-md-12">
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.remuneration_type.$error.required">
+                        Remuneration type is required
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group " ng-if="data.remuneration_type=='Salary' ">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Salary amount(per annum)</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">$</span>
+                    <input type="number" min="1" style="border: 1px solid #ccc;" max="9999999999999999" ng-required="data.remuneration_type=='Salary'"
+                        name="salaryAmount" class="form-control" ng-model="data.salary" placeholder="Enter a salary amount" />
+
+                </div>
+                <span class="rbl-required" ng-show="submitted && inviteFrom.salaryAmount.$error.required">
+                    Salary amount is required
+                </span>
+                <span class="rbl-required" ng-show="submitted && !inviteFrom.salaryAmount.$error.required && (inviteFrom.salaryAmount.$error.max || inviteFrom.salaryAmount.$error.min)">
+                    Salary amount is invaild
+                </span>
+            </div>
+        </div>
+
+        <div ng-if="data.remuneration_type=='Other' ">
+            <div class="row form-group">
+                <div class="col-sm-3 shift-edit-label">
+                    <b>Name of agreement</b><span class="rbl-required">*</span>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" maxlength="100" ng-required="data.remuneration_type=='Other'" name="nameAgreement" class="form-control"
+                        ng-model="data.agreement_name" placeholder="Enter name of agreement" />
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.nameAgreement.$error.required">
+                        Name of agreement is required
+                    </span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-3 shift-edit-label">
+                    <b>Classification under agreement</b><span class="rbl-required">*</span>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" maxlength="100" ng-required="data.remuneration_type=='Other'" name="classificationUnserAgreement" class="form-control"
+                        ng-model="data.agreement_classification" placeholder="Enter classification under agreement " />
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.classificationUnserAgreement.$error.required">
+                        Classification under agreement is required
+                    </span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-3 shift-edit-label">
+                    <b>Base hourly rate</b><span class="rbl-required">*</span>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">$</span>
+                        <input type="number" min="1" ng-required="data.remuneration_type=='Other'" name="baseHourlyRate" class="form-control rbl-border"
+                            ng-model="data.base_hourly_rate" placeholder="Enter base hourly rate" />
+                    </div>
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.baseHourlyRate.$error.required">
+                        Base hourly rate is required
+                    </span>
+                   <span class="rbl-required" ng-show="submitted && !inviteFrom.baseHourlyRate.$error.required && (inviteFrom.baseHourlyRate.$error.max || inviteFrom.baseHourlyRate.$error.min)">
+                     Base hourly rate is invaild
+                </span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-3 shift-edit-label">
+                    <b>Flat rate(per hour)</b><span class="rbl-required">*</span>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">$</span>
+                        <input type="number" min="1" max="2147483647" ng-required="data.remuneration_type=='Other'" name="flatRate" class="form-control rbl-border"
+                            ng-model="data.flat_rate" placeholder="Enter flat rate" />
+                    </div>
+
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.flatRate.$error.required">
+                        Flat rate is required
+                    </span>
+                    <span class="rbl-required" ng-show="submitted && (inviteFrom.flatRate.$error.max || inviteFrom.flatRate.$error.min) ">
+                        Flat rate is invalid
+                    </span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-3 shift-edit-label">
+                    <b>Remuneration items</b>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" ng-maxlength="200" name="additional_remuneration" class="form-control" ng-model="data.additional_remuneration"
+                        placeholder="eg; commissions, car park, bonus, gym membership etc" />
+                </div>
+            </div>
+
+        </div>
+
+        <!--div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <b>	Award / Instrument</b>
+            </div>
+
+            <div class="col-md-6 shift-edit-label">
+                <div class="col-md-6 row">
+                    <label>
+                        <input type="radio" name="award_instrument" ng-model="data.award_instrument" value="Collective agreement">  Collective agreement
+                    </label>
+                </div>
+                <div class="col-md-6">
+                    <label>
+                        <input type="radio" name="award_instrument" id="award_instrument" ng-model="data.award_instrument" value="Enterprise agreement"
+                               > Enterprise agreement
+                    </label>
+                </div>
+                <div class="row col-md-12">
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.award_instrument.$error.required">
+                        Award / Instrument is required
+                    </span>
+                </div>
+            </div
+        </div-->
+
+        <!--div class="row form-group" ng-if="data.remuneration_type=='Hourly rate' ">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Award/Agreement</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-5">
+                <select class="form-control" id="award" name="award" required ng-model="data.award_name">
+                    <option value="">Select</option>
+                    <option ng-repeat="award in awardList" value="{{award.award_name}}">{{award.award_name}}</option>
+                </select>
+                <span class="rbl-required" ng-show="submitted && inviteFrom.award.$error.required">
+                    Award/Agreement is required
+                </span>
+            </div>
+        </div-->
+
+        <div class="row form-group" ng-if="data.remuneration_type=='Hourly rate'">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Pay classification</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-4">
+                <!--select class="form-control" id="classification" name="classification" required ng-model="data.pay_category">
+                    <option value="" ng-selected="data.award_name == null">Select</option>
+                    <option ng-repeat="pay in payClassificationList | filter:{award_name: data.award_name}" value="{{pay.agreement_name}}">{{pay.agreement_name}}</option>
+                </select-->
+
+                <select id="agreement" class="form-control" ng-options="agreement.text as agreement.text for agreement in payClassificationList track by agreement.id" ng-model="data.pay_category"></select>
+                <span class="rbl-required" ng-show="submitted && inviteFrom.classification.$error.required">
+                    Pay classification is required
+                </span>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <br />
+                <b>Required licences/ tickets</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-6 shift-edit-label rbl-fixed-width" style="margin-left: -19px">
+                <multiselect is-add-new-entry="true" selected="selected" items="licencestickets" displaytag="text" displayitem="licencesticket"
+                    defaultitem="default" maxhighlightlimit="0"></multiselect>
+            </div>
+            <div class="row col-md-12 col-sm-offset-3">
+                <span class="rbl-required" ng-if="selected.length == 0">Please select licences/tickets</span>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Reporting to </b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-4 shift-edit-label rbl-fixed-width smart-list">
+                <input type="text" ng-model="data.reporting_to" name="reporting_to" id="reporting_to" uib-typeahead="reporter for reporter in reportinglist | filter:$viewValue | limitTo:20"
+                    class="form-control" required>
+                    <script type="text/ng-template" id="typeaheadTemplate.html">
+                        <a>
+                            <span ng-bind-html="match.label | uibTypeaheadHighlight:query" style="width:100%;"></span>
+                        </a>
+                    </script>
+                    <span class="rbl-required" ng-show="submitted && inviteFrom.reporting_to.$error.required">
+                    Reporting to is required
+                </span>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+                <b>Commencement date</b><span class="rbl-required">*</span>
+            </div>
+            <div class="col-sm-3">
+                <div class="select-date rbl-datepicker">
+                    <p class="input-group">
+                        <input type="text" required class="form-control" name="commence_work_date" uib-datepicker-popup="{{dateFormat}}" ng-model="data.commence_work_date"
+                            is-open="popup1.opened" datepicker-options="calendarOptions" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn selectDate" ng-click="popup1.opened = true"><i class="roublico-calendar"></i></button>
+                        </span>
+                    </p>
+
+                </div>
+                <span class="rbl-required " ng-show="submitted &&  inviteFrom.commence_work_date.$error.required">
+                    Date is required
+                </span>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+
+            </div>
+
+            <div class="col-sm-6">
+                <button type="button" ng-disabled="isEmailExits || is_registered" ng-click="addMoreEmployee(inviteFrom.$valid,data,inviteFrom);"
+                    class="btn rbbtn-secondary rbbtn-large  pull-right">{{btnTitle}}</button>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-9">
+                <textarea class="form-control" maxlength="200" rows="4" placeholder="Optional custom message" id="message" ng-model="optionalMessage"></textarea>
+            </div>
+        </div>
+
+        <!--Submit button section  -->
+        <div class="row form-group">
+            <div class="col-sm-3 shift-edit-label">
+            </div>
+            <div class="col-sm-6">
+                <div class="col-sm-6">
+                    <h5 ng-if="invites.length>0"> {{invites.length}} invitation(s) to be sent</h5>
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" ng-disabled="isEmailExits || is_registered || data.isEdit" class="btn rbbtn-primary rbbtn-large " onkeypress="(event.keyCode == 13)?submit(inviteFrom.$valid,data,inviteFrom):false;"
+                        ng-click="submit(inviteFrom.$valid,data,inviteFrom)">
+                        Send
+                        </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div class="content-secondary">
+    <h3>Invitation list </h3>
+    <ul>
+        <li ng-repeat="invite in invites | orderBy : 'first_name'">
+            <button type="button" class="btn btn-link" ng-click="editInvite(invite)" style="width: 95%;
+    text-align: left;
+    overflow: hidden;
+    border: 1px solid;
+    box-shadow: 0px 0px 3px;margin-top: -3px;" ng-disabled="isEmailExits || data.isEdit">
+                {{invite.first_name}} {{invite.last_name}}
+            </button>
+            <a ng-click="removeInvite(invite)" style="display: inline-block;
+    border: 1px solid;
+    padding: 3px 5px;
+    border-radius: 26px;margin-left: -33px;    margin-top: 11px;">
+                <span class="glyphicon glyphicon-remove"> </span>
+            </a>
+        </li>
+    </ul>
+</div>
